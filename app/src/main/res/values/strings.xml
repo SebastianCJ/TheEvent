@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">TheEvent</string>
+    <string name="cargando">CARGANDO</string>
+    <string name="noTienesCuenta"><b>¿No tienes cuenta?</b> Regístrate </string>
+    <string name="olvidasteContra">¿Olvidaste tu contraseña?</string>
+    <string name="usuario">Usuario</string>
+    <string name="selectEvento">SELECCIONA UN EVENTO</string>
+    <string name="misEventos">MIS EVENTOS</string>
+    <string name="contrasena">Contraseña</string>
+    <string name="agregarEvento">Agregar Evento</string>
+    <string name="facebook_app_id">714600825383444</string>
+    <string name="fb_login_protocol_scheme">fb518262088371101</string>
+
+    <string name="quickstart_message">Click the SUBSCRIBE TO NEWS button below to subscribe to the
+        news topic. Messages sent to the news topic will be received. The LOG TOKEN button logs the
+        InstanceID token to logcat.</string>
+    <string name="subscribe_to_news">Subscribe To News</string>
+    <string name="log_token">Log Token</string>
+
+    <string name="msg_subscribed">Subscribed to news topic</string>
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+</resources>
