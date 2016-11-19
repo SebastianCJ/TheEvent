@@ -1,5 +1,6 @@
 package com.example.gatsu.theevent;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -44,6 +45,13 @@ public class Evento extends AppCompatActivity {
         params.addRule(RelativeLayout.CENTER_HORIZONTAL);
         params.addRule(RelativeLayout.BELOW, numEventos);
         eventContainer.addView(agregar,params);
+        agregar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(Evento.this, Camera.class);
+                startActivity(intent);
+
+            }
+        });
 
         TextView agregarTxt = new TextView(this);
         RelativeLayout.LayoutParams paramsTxt = new RelativeLayout.LayoutParams(
