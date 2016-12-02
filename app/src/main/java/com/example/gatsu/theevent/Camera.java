@@ -1,10 +1,7 @@
 package com.example.gatsu.theevent;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 
 public class Camera extends Activity {
 
@@ -17,7 +14,7 @@ public class Camera extends Activity {
                     .replace(R.id.container, Camera2BasicFragment.newInstance())
                     .commit();
         }
-        
+
     }
 
 }
