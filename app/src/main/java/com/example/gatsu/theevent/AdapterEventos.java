@@ -4,6 +4,7 @@ package com.example.gatsu.theevent;
  * Created by Gatsu on 12/2/2016.
  */
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +12,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 public class AdapterEventos extends ArrayAdapter<String> {
     private final Activity context;
     private final String[] nombres;
     private final String[] lugares;
     private final String[] descripciones;
     private final String[] fechas;
-
+    ArrayList<Bitmap> imagenes;
 
     static class ViewHolder {
         public TextView nombreTxt;
@@ -28,13 +33,14 @@ public class AdapterEventos extends ArrayAdapter<String> {
         public ImageView image;
     }
 
-    public AdapterEventos(Activity context, String[] nombres, String[] lugares, String[] descripciones, String[] fechas) {
+    public AdapterEventos(Activity context, String[] nombres, String[] lugares, String[] descripciones, String[] fechas, ArrayList<Bitmap> imagenes) {
         super(context, R.layout.eventos_layout, nombres);
         this.context = context;
         this.nombres = nombres;
         this.lugares = lugares;
         this.descripciones = descripciones;
         this.fechas = fechas;
+        this.imagenes = imagenes;
     }
 
     @Override
@@ -69,12 +75,15 @@ public class AdapterEventos extends ArrayAdapter<String> {
         String lugar = lugares[position];
         String descripcion = descripciones[position];
         String fecha = fechas[position];
-
+        if (imagenes.size()>0) {
+            Bitmap imagen = imagenes.get(position);
+            holder.image.setImageBitmap(imagen);
+        }
         holder.nombreTxt.setText(nombre);
         holder.lugarTxt.setText(lugar);
         holder.descTxt.setText(descripcion);
         holder.fechaTxt.setText(fecha);
-        holder.image.setImageResource(R.drawable.eventimg);
+
 
         return rowView;
     }

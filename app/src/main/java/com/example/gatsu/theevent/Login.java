@@ -345,44 +345,44 @@ public class Login extends AppCompatActivity implements View.OnKeyListener {
 
     public class AsyncLogin extends AsyncTask<String, String, String> {
 
-        public AsyncLogin() {
-            //set context variables if required
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            //String urlString = params[0]; // URL to call
-
-            String resultToDisplay = "";
-
-            InputStream in = null;
-            try {
-                switch (params[0]) {
-                    case "login":
-                        res = conectar();
-                        return res.getString("success");
-                    case "fb":
-                        res = conectarFB();
-                        return res.getString("success");
-                    case "twit":
-                        res = conectarTwit();
-                        return res.getString("success");
-                }
-
-            } catch (Exception e) {
-
-                System.out.println(e.getMessage());
-
-                return e.getMessage();
-
+            public AsyncLogin() {
+                //set context variables if required
             }
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                //String urlString = params[0]; // URL to call
+
+                String resultToDisplay = "";
+
+                InputStream in = null;
+                try {
+                    switch (params[0]) {
+                        case "login":
+                            res = conectar();
+                            return res.getString("success");
+                        case "fb":
+                            res = conectarFB();
+                            return res.getString("success");
+                        case "twit":
+                            res = conectarTwit();
+                            return res.getString("success");
+                    }
+
+                } catch (Exception e) {
+
+                    System.out.println(e.getMessage());
+
+                    return e.getMessage();
+
+                }
 
 //            try {
 //                resultToDisplay = IOUtils.toString(in, "UTF-8");
@@ -390,21 +390,23 @@ public class Login extends AppCompatActivity implements View.OnKeyListener {
 //            } catch (IOException e) {
 //                e.printStackTrace();
 //            }
-            try {
-                return res.getString("success");
-            } catch (JSONException e) {
-                e.printStackTrace();
+                try {
+                    return res.getString("success");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return "Error";
             }
-            return "Error";
-        }
 
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
+            if (result.equals("OK")) {
                 Intent intent = new Intent(Login.this, Evento.class);
                 startActivity(intent);
-            if (!result.equals("OK")) {
+            }
+            else{
                 Toast.makeText(Login.this, result, Toast.LENGTH_LONG).show();
             }
         }
