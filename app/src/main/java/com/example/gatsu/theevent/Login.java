@@ -28,6 +28,7 @@ import com.facebook.login.LoginResult;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
@@ -105,12 +106,12 @@ public class Login extends AppCompatActivity implements View.OnKeyListener {
                 Log.d("MENSAJE: ", "Key: " + key + " Value: " + value);
             }
         }
-//        FirebaseMessaging.getInstance().subscribeToTopic("news");
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
 //        // [END subscribe_topics]
 //
 //        // Log and toast
-//        String msg = getString(R.string.msg_subscribed);
-//        Log.d("TEMA: ", msg);
+        String msg = getString(R.string.msg_subscribed);
+        Log.d("TEMA: ", msg);
 
         String token = FirebaseInstanceId.getInstance().getToken();
 

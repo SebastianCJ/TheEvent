@@ -10,15 +10,11 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -194,7 +190,6 @@ public class Evento extends AppCompatActivity {
                         return res.getString("success");
                     case "eventimg":
                         String remotePath = params[1];
-                        Bitmap myBitmap = getBitmapFromURL(remotePath);
                         return "OK";
                 }
 
