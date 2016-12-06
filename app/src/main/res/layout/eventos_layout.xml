@@ -8,7 +8,7 @@
         android:layout_height="185dp"
         android:id="@+id/eventimg"
         android:contentDescription="@string/imgevento"
-        android:background="@drawable/eventimg"
+
 
         android:layout_marginTop="10dp"
         android:layout_alignParentRight="true"

@@ -1,0 +1,13 @@
+        String[] nombres = new String[] { "Amaya y Juan", "Amaya y Juan", "Amaya y Juan"
+                 };
+
+        String[] lugares = new String[] { "Nombre del Lugar", "Nombre del Lugar", "Nombre del Lugar"
+                 };
+
+        String[] descripciones = new String[] { "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam"
+                 };
+
+        String[] fechas = new String[] { "12/Marzo/2017", "13/Marzo/2017", "12/Abril/2017"
+                 };
