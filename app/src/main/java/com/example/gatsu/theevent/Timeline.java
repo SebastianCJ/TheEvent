@@ -1,5 +1,6 @@
 package com.example.gatsu.theevent;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -7,11 +8,19 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,51 +34,90 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
-public class Evento extends AppCompatActivity {
+public class Timeline extends AppCompatActivity {
     private String serverUrl = "http://distro.mx/TheEvent/webservices/the3v3nt.php";
     public SharedPreferences datosPersistentes;
     ProgressDialog pDialog;
     private String[] nombres;
-    private String[] lugares;
-    private String[] descripciones;
-    private String[] fechas;
+    private String[] dias;
+    private String[] mensajes;
+    private String[] comentarios;
+    private String[] likes;
     private String id;
     JSONObject res;
+    final String[] data ={"Opcion 1","Opcion 2",};
     ListView eventContainer;
     ArrayList<Bitmap> imagenes = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_evento);
+        setContentView(R.layout.activity_timeline);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.timelinemenu, data);
+
+        final Button btnDrawerTimeline = (Button) findViewById(R.id.btnDrawerTimeline);
+        final Button btnDrawerTimelineClose = (Button) findViewById(R.id.btnDrawerTimelineClose);
 
 
-        TextView selectEvento = (TextView) this.findViewById(R.id.seleccionaEvento);
-        TextView misEventos = (TextView) this.findViewById(R.id.misEventos);
-        ImageView agregarbtn = (ImageView) this.findViewById(R.id.btnagregarimg);
-        selectEvento.setTypeface(CustomFontsLoader.getTypeface(this,CustomFontsLoader.Bold));
-        misEventos.setTypeface(CustomFontsLoader.getTypeface(this,CustomFontsLoader.Light));
+        new AsyncEventos().execute("timeline");
 
-        new AsyncEventos().execute("evento");
+//        eventContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, final View view,
+//                                    int position, long id) {
+//                Intent intent = new Intent(Timeline.this, Evento.class);
+//                startActivity(intent);
+//            }
+//
+//        });
+        final DrawerLayout drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
+        final ListView navList = (ListView) findViewById(R.id.drawer);
+        navList.setAdapter(adapter);
+        navList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override @SuppressWarnings("Deprecation")
+            public void onItemClick(AdapterView<?> parent, View view, final int pos,long id){
+                drawer.setDrawerListener( new DrawerLayout.SimpleDrawerListener(){
 
-        eventContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                });
+                switch(pos){
+                    case 1:
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, final View view,
-                                    int position, long id) {
-                Intent intent = new Intent(Evento.this, Login.class);
-                startActivity(intent);
+
+                        break;
+                    case 2:
+                        drawer.closeDrawer(navList);
+                        break;
+
+                }
+                //drawer.closeDrawer(navList);
             }
-
         });
 
-        agregarbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Evento.this, Timeline.class);
-                startActivity(intent);
-            }
+        final Animation bottomUp = AnimationUtils.loadAnimation(this,
+                R.anim.up_bottom);
 
+        btnDrawerTimeline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawer.setVisibility(View.VISIBLE);
+                drawer.openDrawer(GravityCompat.START);
+                btnDrawerTimeline.setVisibility(View.GONE);
+                drawer.startAnimation(bottomUp);
+                btnDrawerTimelineClose.setVisibility(View.VISIBLE);
+            }
         });
+
+        btnDrawerTimelineClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawer.closeDrawer(navList);
+                drawer.setVisibility(View.GONE);
+                btnDrawerTimeline.setVisibility(View.VISIBLE);
+                btnDrawerTimelineClose.setVisibility(View.GONE);
+            }
+        });
+
     }
 
     public static int calculateInSampleSize(
@@ -116,33 +164,36 @@ public class Evento extends AppCompatActivity {
         }
     }
 
-    private JSONObject obtenerEventos() {
+    private JSONObject obtenerPosts() {
         datosPersistentes = getSharedPreferences("The3v3nt", Context.MODE_PRIVATE);
         id = datosPersistentes.getString("idusrThe3v3nt","");
         Log.v("ESTE ES EL IDUSUARIO",id);
         JSONData conexion = new JSONData();
         JSONObject respuesta = null;
         try {
-            respuesta = conexion.conexionServidor(serverUrl, "action=eventos&idusuario=" + id);
+            respuesta = conexion.conexionServidor(serverUrl, "action=timeline&idusuario=" + id);
 
             if (respuesta.getString("success").equals("OK")) {
 
-                JSONArray eventos = respuesta.getJSONArray("eventos");
-                nombres = new String[eventos.length()];
-                lugares = new String[eventos.length()];
-                descripciones = new String[eventos.length()];
-                fechas = new String[eventos.length()];
+                JSONArray posts = respuesta.getJSONArray("posts");
+                nombres = new String[posts.length()];
+                dias = new String[posts.length()];
+                mensajes = new String[posts.length()];
+                comentarios = new String[posts.length()];
+                likes = new String[posts.length()];
                 imagenes.clear();
+
 
                 int i = 0;
 
-                while (i < eventos.length()) {
-                    JSONObject evento = eventos.getJSONObject(i);
-                    nombres[i] = evento.getString("nombre");
-                    lugares[i] = evento.getString("lugar");
-                    descripciones[i] = evento.getString("descripcion");
-                    fechas[i] = evento.getString("fecha");
-                    String remotePath = "http://distro.mx/TheEvent/imagenes/eventos/" + evento.getString("imagen");
+                while (i < posts.length()) {
+                    JSONObject post = posts.getJSONObject(i);
+                    nombres[i] = post.getString("nombre");
+                    dias[i] = post.getString("fecha");
+                    mensajes[i] = post.getString("post");
+                    comentarios[i] = post.getString("numcomentarios");
+                    likes[i] = post.getString("numlikes");
+                    String remotePath = "http://distro.mx/TheEvent/imagenes/timeline/" + post.getString("imagen");
                     Bitmap myBitMap = getBitmapFromURL(remotePath);
                     imagenes.add(myBitMap);
                     i++;
@@ -164,10 +215,10 @@ public class Evento extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            eventContainer = (ListView) findViewById(R.id.eventContainer);
-            pDialog = new ProgressDialog(Evento.this);
+            eventContainer = (ListView) findViewById(R.id.eventContainerTimeline);
+            pDialog = new ProgressDialog(Timeline.this);
             // Set progressbar message
-            pDialog.setMessage("Cargando Eventos...");
+            pDialog.setMessage("Cargando Biografia...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(false);
             // Show progressbar
@@ -185,8 +236,8 @@ public class Evento extends AppCompatActivity {
             InputStream in = null;
             try {
                 switch (params[0]) {
-                    case "evento":
-                        res = obtenerEventos();
+                    case "timeline":
+                        res = obtenerPosts();
                         return res.getString("success");
                     case "eventimg":
                         String remotePath = params[1];
@@ -215,10 +266,10 @@ public class Evento extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             pDialog.dismiss();
-            AdapterEventos adapter = new AdapterEventos(Evento.this, nombres, lugares, descripciones, fechas, imagenes);
+            AdapterTimeline adapter = new AdapterTimeline(Timeline.this, nombres, dias, mensajes, imagenes, comentarios, likes);
             eventContainer.setAdapter(adapter);
 
         }
     }
-    }
+}
 

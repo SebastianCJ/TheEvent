@@ -26,4 +26,5 @@
     <string name="camera_error">This device doesn\'t support Camera2 API.</string>
     <string name="intro_message">Esta es la Camara2 API</string>
     <string name="imgevento">imgEvento</string>
+    <string name="timeline">      TIMELINE</string>
 </resources>
