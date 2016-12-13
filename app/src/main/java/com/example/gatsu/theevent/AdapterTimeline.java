@@ -158,9 +158,7 @@ public class AdapterTimeline extends ArrayAdapter<String> {
         holder.comentariosTxt.setText(numComentarios);
         holder.numlikes.setText(numLikes);
         if(position==getCount()- 1){
-            if (nombres.length ==1) {
                 holder.vertblack.setVisibility(View.VISIBLE);
-            }
         }
         return rowView;
     }
