@@ -36,6 +36,7 @@
             android:drawableRight="@mipmap/ic_expand_more_white_18dp"
             android:drawableEnd="@mipmap/ic_expand_more_white_18dp"
             android:text="@string/timeline"
+            android:visibility="gone"
             android:textSize="20sp">
         </Button>
 
@@ -66,20 +67,15 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/timelineTitulo"/>
 
-    <android.support.v4.widget.DrawerLayout
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:layout_below="@+id/timelineTitulo"
-        android:layout_alignParentLeft="true"
-        android:id="@+id/drawer_layout">
+
     <ListView
         android:id="@+id/drawer"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:layout_gravity="start"
+        android:layout_below="@+id/timelineTitulo"
         android:background="@color/transparent" />
 
-</android.support.v4.widget.DrawerLayout>
 
 </RelativeLayout>

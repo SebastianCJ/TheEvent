@@ -25,6 +25,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.mikhaellopez.circularimageview.CircularImageView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +46,7 @@ public class Timeline extends AppCompatActivity {
     private String[] comentarios;
     private String[] likes;
     private String id;
+    private String idevento;
     JSONObject res;
     final String[] data ={"Opcion 1","Opcion 2",};
     ListView eventContainer;
@@ -57,9 +60,16 @@ public class Timeline extends AppCompatActivity {
 
         final Button btnDrawerTimeline = (Button) findViewById(R.id.btnDrawerTimeline);
         final Button btnDrawerTimelineClose = (Button) findViewById(R.id.btnDrawerTimelineClose);
-
+        final CircularImageView fotoPerfil = (CircularImageView) findViewById(R.id.fotoEncabezado);
 
         new AsyncEventos().execute("timeline");
+
+        fotoPerfil.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(Timeline.this, Camera.class);
+                startActivity(intent);
+            }
+        });
 
 //        eventContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //
@@ -71,22 +81,18 @@ public class Timeline extends AppCompatActivity {
 //            }
 //
 //        });
-        final DrawerLayout drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
         final ListView navList = (ListView) findViewById(R.id.drawer);
         navList.setAdapter(adapter);
         navList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override @SuppressWarnings("Deprecation")
             public void onItemClick(AdapterView<?> parent, View view, final int pos,long id){
-                drawer.setDrawerListener( new DrawerLayout.SimpleDrawerListener(){
 
-                });
                 switch(pos){
-                    case 1:
-
-
+                    case 0:
+                        System.out.println("CASO 1");
                         break;
-                    case 2:
-                        drawer.closeDrawer(navList);
+                    case 1:
+                        System.out.println("CASO 2");
                         break;
 
                 }
@@ -97,13 +103,15 @@ public class Timeline extends AppCompatActivity {
         final Animation bottomUp = AnimationUtils.loadAnimation(this,
                 R.anim.up_bottom);
 
+        final Animation upBottom = AnimationUtils.loadAnimation(this,
+                R.anim.bottom_up);
+
         btnDrawerTimeline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawer.setVisibility(View.VISIBLE);
-                drawer.openDrawer(GravityCompat.START);
+                navList.setVisibility(View.VISIBLE);
                 btnDrawerTimeline.setVisibility(View.GONE);
-                drawer.startAnimation(bottomUp);
+                //navList.startAnimation(bottomUp);
                 btnDrawerTimelineClose.setVisibility(View.VISIBLE);
             }
         });
@@ -111,8 +119,8 @@ public class Timeline extends AppCompatActivity {
         btnDrawerTimelineClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawer.closeDrawer(navList);
-                drawer.setVisibility(View.GONE);
+                navList.setVisibility(View.GONE);
+                //navList.startAnimation(upBottom);
                 btnDrawerTimeline.setVisibility(View.VISIBLE);
                 btnDrawerTimelineClose.setVisibility(View.GONE);
             }
@@ -167,11 +175,12 @@ public class Timeline extends AppCompatActivity {
     private JSONObject obtenerPosts() {
         datosPersistentes = getSharedPreferences("The3v3nt", Context.MODE_PRIVATE);
         id = datosPersistentes.getString("idusrThe3v3nt","");
+        idevento = datosPersistentes.getString("ideventoThe3v3nt","");
         Log.v("ESTE ES EL IDUSUARIO",id);
         JSONData conexion = new JSONData();
         JSONObject respuesta = null;
         try {
-            respuesta = conexion.conexionServidor(serverUrl, "action=timeline&idusuario=" + id);
+            respuesta = conexion.conexionServidor(serverUrl, "action=timeline&idusuario=" + id + "&idevento=" + idevento);
 
             if (respuesta.getString("success").equals("OK")) {
 

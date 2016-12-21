@@ -34,6 +34,7 @@ public class Evento extends AppCompatActivity {
     private String[] descripciones;
     private String[] fechas;
     private String id;
+    private String[] ideventos;
     JSONObject res;
     ListView eventContainer;
     ArrayList<Bitmap> imagenes = new ArrayList<>();
@@ -56,20 +57,23 @@ public class Evento extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
-                Intent intent = new Intent(Evento.this, Login.class);
-                startActivity(intent);
-            }
-
-        });
-
-        agregarbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                SharedPreferences.Editor editarDatosPersistentes = datosPersistentes.edit();
+                editarDatosPersistentes.putString("ideventoThe3v3nt", ideventos[position]);
+                editarDatosPersistentes.apply();
                 Intent intent = new Intent(Evento.this, Timeline.class);
                 startActivity(intent);
             }
 
         });
+
+//        agregarbtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(Evento.this, Timeline.class);
+//                startActivity(intent);
+//            }
+//
+//        });
     }
 
     public static int calculateInSampleSize(
@@ -132,6 +136,7 @@ public class Evento extends AppCompatActivity {
                 lugares = new String[eventos.length()];
                 descripciones = new String[eventos.length()];
                 fechas = new String[eventos.length()];
+                ideventos = new String[eventos.length()];
                 imagenes.clear();
 
                 int i = 0;
@@ -142,6 +147,7 @@ public class Evento extends AppCompatActivity {
                     lugares[i] = evento.getString("lugar");
                     descripciones[i] = evento.getString("descripcion");
                     fechas[i] = evento.getString("fecha");
+                    ideventos[i] = evento.getString("idevento");
                     String remotePath = "http://distro.mx/TheEvent/imagenes/eventos/" + evento.getString("imagen");
                     Bitmap myBitMap = getBitmapFromURL(remotePath);
                     imagenes.add(myBitMap);

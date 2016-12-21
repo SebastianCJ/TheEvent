@@ -404,7 +404,7 @@ public class Login extends AppCompatActivity  {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             if (result.equals("OK")) {
-                Intent intent = new Intent(Login.this, Timeline.class);
+                Intent intent = new Intent(Login.this, Evento.class);
                 startActivity(intent);
             }
             else{

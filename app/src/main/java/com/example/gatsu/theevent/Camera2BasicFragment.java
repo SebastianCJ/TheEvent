@@ -7,9 +7,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -27,10 +31,13 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.content.ContextCompat;
@@ -48,8 +55,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -59,6 +68,7 @@ import java.util.concurrent.TimeUnit;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class Camera2BasicFragment extends Fragment
         implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
+
 
     /**
      * Conversion from screen rotation to JPEG orientation.
@@ -412,16 +422,41 @@ public class Camera2BasicFragment extends Fragment
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-
+        view.findViewById(R.id.picture).setOnClickListener(this);
+        view.findViewById(R.id.info).setOnClickListener(this);
         mTextureView = (TextureView) view.findViewById(R.id.texture);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mFile = new File(getActivity().getExternalFilesDir(null), "pic.jpg");
-    }
+        Calendar c = Calendar.getInstance();
+        System.out.println("Current time => " + c.getTime());
+        File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"TheEvent"); //Creates app specific folder
+        if(!path.exists())//check if file already exists
+        {
+            try {
+                if(path.mkdirs()){
+                    Log.d("MKDIR:","Folder The Event Creado");
+                }
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+                }
+        }
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        String formattedDate = df.format(c.getTime());
+        mFile = new File(path, formattedDate+c.get(Calendar.HOUR)+c.get(Calendar.MINUTE)+c.get(Calendar.SECOND)+"_pic.jpg");
 
+
+    }
+    private void scanMedia(String path) {
+        File file = new File(path);
+        Uri uri = Uri.fromFile(file);
+        Intent scanFileIntent = new Intent(
+                Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+        getActivity().sendBroadcast(scanFileIntent);
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -820,19 +855,57 @@ public class Camera2BasicFragment extends Fragment
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session,
                                                @NonNull CaptureRequest request,
                                                @NonNull TotalCaptureResult result) {
-                    showToast("Saved: " + mFile);
+                    showToast("Fotografia Guardada en la Galeria");
                     Log.d(TAG, mFile.toString());
                     unlockFocus();
+                    performCrop(Uri.fromFile(mFile));
+                    scanMedia(mFile.toString());
                 }
             };
 
             mCaptureSession.stopRepeating();
             mCaptureSession.capture(captureBuilder.build(), CaptureCallback, null);
+
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
     }
+    /**
+     * Helper method to carry out crop operation
+     */
+    private void performCrop(Uri picUri){
+        //take care of exceptions
+        System.out.println("PERFROMCROP  !!!");
+        try {
+            //call the standard crop action intent (the user device may not support it)
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+            //indicate image type and Uri
+            cropIntent.setDataAndType(picUri, "image/*");
+            //set crop properties
+            cropIntent.putExtra("crop", "true");
+            //indicate aspect of desired crop
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            //indicate output X and Y
+            cropIntent.putExtra("outputX", 256);
+            cropIntent.putExtra("outputY", 256);
+            //retrieve data on return
+            cropIntent.putExtra("return-data", true);
+            //start the activity - we handle returning in onActivityResult
 
+            cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, picUri);
+            cropIntent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+            startActivity(cropIntent);
+        }
+        //respond to users whose devices do not support the crop action
+        catch(ActivityNotFoundException anfe){
+            //display an error message
+            String errorMessage = "Whoops - your device doesn't support the crop action!";
+            System.out.println(errorMessage);
+            //Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
+            //toast.show();
+        }
+    }
     /**
      * Retrieves the JPEG orientation from the specified screen rotation.
      *
@@ -880,6 +953,10 @@ public class Camera2BasicFragment extends Fragment
                             .setPositiveButton(android.R.string.ok, null)
                             .show();
                 }
+                break;
+            }
+            case R.id.picture:{
+                takePicture();
                 break;
             }
         }
