@@ -226,5 +226,12 @@ public class Evento extends AppCompatActivity {
 
         }
     }
+
+    @Override
+    public void onBackPressed(){
+        Intent Intent = new Intent(getApplicationContext(), Login.class);
+        startActivity(Intent);
+    }
+
     }
 

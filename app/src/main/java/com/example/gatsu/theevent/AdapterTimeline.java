@@ -81,11 +81,8 @@ public class AdapterTimeline extends ArrayAdapter<String> {
 
             viewHolder.btnmegusta = (ImageView) rowView.findViewById(R.id.btnmegusta);
             viewHolder.btncomentario = (ImageView) rowView.findViewById(R.id.btncomentario);
-            viewHolder.btnruta = (ImageView) rowView.findViewById(R.id.btnruta);
             viewHolder.vertblack = (ImageView) rowView.findViewById(R.id.vertblack);
-            viewHolder.comentariolayout = (LinearLayout) rowView.findViewById(R.id.comentariolayout);
-            viewHolder.rutalayout = (LinearLayout) rowView.findViewById(R.id.rutalayout);
-            viewHolder.megustalayout = (LinearLayout) rowView.findViewById(R.id.megustalayout);
+
 
             viewHolder.imgperfil = (ImageView) rowView.findViewById(R.id.imgperfil);
             viewHolder.foto1 = (ImageView) rowView.findViewById(R.id.foto1);
@@ -109,27 +106,6 @@ public class AdapterTimeline extends ArrayAdapter<String> {
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, Evento.class));
-            }
-        });
-
-        holder.comentariolayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("BTNCOMENTARIO");
-            }
-        });
-
-        holder.rutalayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("BTNRUTA");
-            }
-        });
-
-        holder.megustalayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("BTNMEGUSTA");
             }
         });
 

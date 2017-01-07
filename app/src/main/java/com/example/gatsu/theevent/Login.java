@@ -310,7 +310,6 @@ public class Login extends AppCompatActivity  {
 
                 //se guardan los datos de manera persistente.
                 SharedPreferences.Editor editarDatosPersistentes = datosPersistentes.edit();
-                editarDatosPersistentes.putString("usrThe3v3nt", correo);
                 editarDatosPersistentes.putString("idusrThe3v3nt", respuesta.getString("idfb"));
                 editarDatosPersistentes.putString("nombreThe3v3nt",respuesta.getString("nombre"));
                 editarDatosPersistentes.apply();
@@ -419,4 +418,10 @@ public class Login extends AppCompatActivity  {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         mTwitterAuthClient.onActivityResult(requestCode, resultCode, data);
     }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
 }

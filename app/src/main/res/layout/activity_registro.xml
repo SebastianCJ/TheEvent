@@ -109,7 +109,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/olvidasteRegistroR"
+        android:id="@+id/yatienesCuentaR"
         android:text="@string/login"
         android:layout_below="@+id/passwordTxtR"
         android:layout_centerHorizontal="true">

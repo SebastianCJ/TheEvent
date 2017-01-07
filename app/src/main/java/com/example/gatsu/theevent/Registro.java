@@ -66,6 +66,7 @@ public class Registro extends AppCompatActivity implements View.OnKeyListener{
     String enteredUsername;
     String enteredPassword;
     String enteredCorreo;
+    private TextView yatienescuenta;
     private Long userID;
     private String UserName;
     String name;
@@ -86,6 +87,7 @@ public class Registro extends AppCompatActivity implements View.OnKeyListener{
         usuario = (EditText) this.findViewById(R.id.nombreR);
         contrasena = (EditText) this.findViewById(R.id.passwordTxtR);
         correoRegistro = (EditText) this.findViewById(R.id.emailTxtR);
+        yatienescuenta = (TextView) this.findViewById(R.id.yatienesCuentaR);
         contrasena.setOnKeyListener(this);
 
 
@@ -140,6 +142,15 @@ public class Registro extends AppCompatActivity implements View.OnKeyListener{
                     }
 
                 });
+
+        yatienescuenta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent Intent = new Intent(getApplicationContext(), Login.class);
+                startActivity(Intent);
+            }
+
+        });
 
         ImageView btonFB = (ImageView)findViewById(R.id.btn_FbR);
 
@@ -308,6 +319,7 @@ public class Registro extends AppCompatActivity implements View.OnKeyListener{
 //            } catch (IOException e) {
 //                e.printStackTrace();
 //            }
+
             try {
                 return res.getString("success");
             } catch (JSONException e) {
@@ -338,6 +350,12 @@ public class Registro extends AppCompatActivity implements View.OnKeyListener{
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
         mTwitterAuthClient.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onBackPressed(){
+        Intent Intent = new Intent(getApplicationContext(), Login.class);
+        startActivity(Intent);
     }
 
 }

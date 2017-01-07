@@ -25,4 +25,5 @@
     <color name="navy">#000080</color>
     <color name="black">#000000</color>
     <color name="bginput">#99ff436b</color>
+    <color name="colorAccent">#FF4081</color>
 </resources>

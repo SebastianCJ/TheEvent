@@ -16,7 +16,7 @@
         InstanceID token to logcat.</string>
     <string name="subscribe_to_news">Subscribe To News</string>
     <string name="log_token">Log Token</string>
-
+    <string name="menu_navigation">Titulo</string>
     <string name="msg_subscribed">Subscribed to news topic</string>
     <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
     <string name="login">¿Ya tienes cuenta? Inicia Sesion</string>
@@ -28,4 +28,5 @@
     <string name="intro_message">Esta es la Camara2 API</string>
     <string name="imgevento">imgEvento</string>
     <string name="timeline">      TIMELINE</string>
+   <string name="title_activity_asd">asd</string>
 </resources>
