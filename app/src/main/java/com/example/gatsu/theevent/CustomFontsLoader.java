@@ -14,11 +14,11 @@ public class CustomFontsLoader {
     public static final int Light =   3;
     public static final int Regular =   4;
 
-    private static final int NUM_OF_CUSTOM_FONTS = 4;
+    private static final int NUM_OF_CUSTOM_FONTS = 5;
 
     private static boolean fontsLoaded = false;
 
-    private static Typeface[] fonts = new Typeface[4];
+    private static Typeface[] fonts = new Typeface[5];
 
     private static String[] fontPath = {
             "fonts/Montserrat-Black.otf",

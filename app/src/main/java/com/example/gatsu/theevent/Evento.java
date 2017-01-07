@@ -10,15 +10,11 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +34,7 @@ public class Evento extends AppCompatActivity {
     private String[] descripciones;
     private String[] fechas;
     private String id;
+    private String[] ideventos;
     JSONObject res;
     ListView eventContainer;
     ArrayList<Bitmap> imagenes = new ArrayList<>();
@@ -60,20 +57,23 @@ public class Evento extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
-                Intent intent = new Intent(Evento.this, Login.class);
+                SharedPreferences.Editor editarDatosPersistentes = datosPersistentes.edit();
+                editarDatosPersistentes.putString("ideventoThe3v3nt", ideventos[position]);
+                editarDatosPersistentes.apply();
+                Intent intent = new Intent(Evento.this, Timeline.class);
                 startActivity(intent);
             }
 
         });
 
-        agregarbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Evento.this, Camera.class);
-                startActivity(intent);
-            }
-
-        });
+//        agregarbtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(Evento.this, Timeline.class);
+//                startActivity(intent);
+//            }
+//
+//        });
     }
 
     public static int calculateInSampleSize(
@@ -136,6 +136,7 @@ public class Evento extends AppCompatActivity {
                 lugares = new String[eventos.length()];
                 descripciones = new String[eventos.length()];
                 fechas = new String[eventos.length()];
+                ideventos = new String[eventos.length()];
                 imagenes.clear();
 
                 int i = 0;
@@ -146,7 +147,8 @@ public class Evento extends AppCompatActivity {
                     lugares[i] = evento.getString("lugar");
                     descripciones[i] = evento.getString("descripcion");
                     fechas[i] = evento.getString("fecha");
-                    String remotePath = "http://distro.mx/TheEvent/imagenes/" + evento.getString("imagen") + ".jpg";
+                    ideventos[i] = evento.getString("idevento");
+                    String remotePath = "http://distro.mx/TheEvent/imagenes/eventos/" + evento.getString("imagen");
                     Bitmap myBitMap = getBitmapFromURL(remotePath);
                     imagenes.add(myBitMap);
                     i++;
@@ -194,7 +196,6 @@ public class Evento extends AppCompatActivity {
                         return res.getString("success");
                     case "eventimg":
                         String remotePath = params[1];
-                        Bitmap myBitmap = getBitmapFromURL(remotePath);
                         return "OK";
                 }
 
@@ -225,5 +226,12 @@ public class Evento extends AppCompatActivity {
 
         }
     }
+
+    @Override
+    public void onBackPressed(){
+        Intent Intent = new Intent(getApplicationContext(), Login.class);
+        startActivity(Intent);
+    }
+
     }
 

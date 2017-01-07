@@ -28,6 +28,7 @@ import com.facebook.login.LoginResult;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
@@ -46,7 +47,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-public class Login extends AppCompatActivity implements View.OnKeyListener {
+public class Login extends AppCompatActivity  {
     private CallbackManager callbackManager;
     // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
     private static final String TWITTER_KEY = "9Qs2Ygm3kvP15XJNJGWKJ5Glp";
@@ -76,18 +77,57 @@ public class Login extends AppCompatActivity implements View.OnKeyListener {
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new Twitter(authConfig));
 
-        TextView recuperarContra = (TextView) this.findViewById(R.id.olvidasteLogin);
-        TextView registrarse = (TextView) this.findViewById(R.id.registrateLogin);
+        TextView recuperarContra = (TextView) findViewById(R.id.olvidasteLogin);
+        TextView registrarse = (TextView) findViewById(R.id.registrateLogin);
+
+        registrarse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("REGISTRO");
+                Intent Intent = new Intent(getApplicationContext(), Registro.class);
+                startActivity(Intent);
+            }
+        });
 
         usuario = (EditText) this.findViewById(R.id.emailTxt);
         contrasena = (EditText) this.findViewById(R.id.passwordTxt);
-        contrasena.setOnKeyListener(this);
+        contrasena.setOnKeyListener(new EditText.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == EditorInfo.IME_ACTION_SEARCH ||
+                        keyCode == EditorInfo.IME_ACTION_DONE ||
+                        event.getAction() == KeyEvent.ACTION_DOWN &&
+                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
 
-        recuperarContra.setTypeface(CustomFontsLoader.getTypeface(this,CustomFontsLoader.Light));
-        registrarse.setTypeface(CustomFontsLoader.getTypeface(this,CustomFontsLoader.Light));
+                    if (!event.isShiftPressed()) {
+                        Log.v("AndroidEnterKeyActivity","Enter Key Pressed!");
+                        String enteredUsername = usuario.getText().toString();
+                        String enteredPassword = contrasena.getText().toString();
 
-        usuario.setTypeface(CustomFontsLoader.getTypeface(this,CustomFontsLoader.Light));
-        contrasena.setTypeface(CustomFontsLoader.getTypeface(this,CustomFontsLoader.Light));
+                        if (enteredUsername.equals("") || enteredPassword.equals("")) {
+                            Toast.makeText(Login.this, "No pueden existir campos vacios", Toast.LENGTH_LONG).show();
+                            return true;
+                        }
+
+                        if (enteredUsername.length() <= 1 || enteredPassword.length() <= 1) {
+                            Toast.makeText(Login.this, "La longitud debe ser mayor a 1.", Toast.LENGTH_LONG).show();
+                            return true;
+                        }
+
+                        //autentificacion con el servidor remoto
+                        new AsyncLogin().execute("login");
+
+                        return true;
+                    }
+
+                }
+                return false; // pass on to other listeners.
+            }
+        });
+        recuperarContra.setTypeface(CustomFontsLoader.getTypeface(this, CustomFontsLoader.Light));
+        registrarse.setTypeface(CustomFontsLoader.getTypeface(this, CustomFontsLoader.Light));
+
+        usuario.setTypeface(CustomFontsLoader.getTypeface(this, CustomFontsLoader.Light));
+        contrasena.setTypeface(CustomFontsLoader.getTypeface(this, CustomFontsLoader.Light));
 
 
         // If a notification message is tapped, any data accompanying the notification
@@ -105,12 +145,12 @@ public class Login extends AppCompatActivity implements View.OnKeyListener {
                 Log.d("MENSAJE: ", "Key: " + key + " Value: " + value);
             }
         }
-//        FirebaseMessaging.getInstance().subscribeToTopic("news");
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
 //        // [END subscribe_topics]
 //
 //        // Log and toast
-//        String msg = getString(R.string.msg_subscribed);
-//        Log.d("TEMA: ", msg);
+        String msg = getString(R.string.msg_subscribed);
+        Log.d("TEMA: ", msg);
 
         String token = FirebaseInstanceId.getInstance().getToken();
 
@@ -163,18 +203,19 @@ public class Login extends AppCompatActivity implements View.OnKeyListener {
 
                 });
 
-        ImageView btonFB = (ImageView)findViewById(R.id.btn_Fb);
+        ImageView btonFB = (ImageView) findViewById(R.id.btn_Fb);
+
 
         btonFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LoginManager.getInstance().logInWithReadPermissions(Login.this, Arrays.asList("public_profile","email"));
+                LoginManager.getInstance().logInWithReadPermissions(Login.this, Arrays.asList("public_profile", "email"));
             }
 
         });
         ImageView btn_Twitter = (ImageView) findViewById(R.id.btn_Twitter);
 
-        mTwitterAuthClient= new TwitterAuthClient();
+        mTwitterAuthClient = new TwitterAuthClient();
         btn_Twitter.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -189,30 +230,24 @@ public class Login extends AppCompatActivity implements View.OnKeyListener {
                         userID = session.getUserId();
                         System.out.println("USERIDTWIT: " + userID);
 
-                        Twitter.getApiClient(session).getAccountService().verifyCredentials(true, false).enqueue(new Callback<User>()
-                        {
+                        Twitter.getApiClient(session).getAccountService().verifyCredentials(true, false).enqueue(new Callback<User>() {
                             @Override
-                            public void success(Result<User> userResult)
-                            {
-                                try
-                                {
+                            public void success(Result<User> userResult) {
+                                try {
                                     User user = userResult.data;
                                     UserName = user.name;
                                     new AsyncLogin().execute("twit");
-                                } catch (Exception e)
-                                {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
 
                             @Override
-                            public void failure(TwitterException e)
-                            {
+                            public void failure(TwitterException e) {
 
                             }
 
                         });
-
 
 
                     }
@@ -228,48 +263,14 @@ public class Login extends AppCompatActivity implements View.OnKeyListener {
 
         //vemos si tenemos guardado nombre de usuario y/o contraseña, en caso de que esten guardados, los mostramos
         datosPersistentes = getSharedPreferences("The3v3nt", Context.MODE_PRIVATE);
-        String usuarioguardado = datosPersistentes.getString("usrThe3v3nt","");
-        String passguardado = datosPersistentes.getString("passThe3v3nt","");
+        String usuarioguardado = datosPersistentes.getString("usrThe3v3nt", "");
+        String passguardado = datosPersistentes.getString("passThe3v3nt", "");
 
         //si ya hay datos guardados, se muestran en pantalla
-        if (usuarioguardado.length() > 0 && passguardado.length()> 0 ) {
+        if (usuarioguardado.length() > 0 && passguardado.length() > 0) {
             usuario.setText(usuarioguardado);
             contrasena.setText(passguardado);
         }
-    }
-
-    @Override
-    public boolean onKey(View view, int keyCode, KeyEvent event) {
-
-        if (keyCode == EditorInfo.IME_ACTION_SEARCH ||
-                keyCode == EditorInfo.IME_ACTION_DONE ||
-                event.getAction() == KeyEvent.ACTION_DOWN &&
-                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-
-            if (!event.isShiftPressed()) {
-                Log.v("AndroidEnterKeyActivity","Enter Key Pressed!");
-                String enteredUsername = usuario.getText().toString();
-                String enteredPassword = contrasena.getText().toString();
-
-                if (enteredUsername.equals("") || enteredPassword.equals("")) {
-                    Toast.makeText(Login.this, "No pueden existir campos vacios", Toast.LENGTH_LONG).show();
-                    return true;
-                }
-
-                if (enteredUsername.length() <= 1 || enteredPassword.length() <= 1) {
-                    Toast.makeText(Login.this, "La longitud debe ser mayor a 1.", Toast.LENGTH_LONG).show();
-                    return true;
-                }
-
-                //autentificacion con el servidor remoto
-                new AsyncLogin().execute("login");
-
-                return true;
-            }
-
-        }
-        return false; // pass on to other listeners.
-
     }
 
     private JSONObject conectar(){
@@ -309,7 +310,6 @@ public class Login extends AppCompatActivity implements View.OnKeyListener {
 
                 //se guardan los datos de manera persistente.
                 SharedPreferences.Editor editarDatosPersistentes = datosPersistentes.edit();
-                editarDatosPersistentes.putString("usrThe3v3nt", correo);
                 editarDatosPersistentes.putString("idusrThe3v3nt", respuesta.getString("idfb"));
                 editarDatosPersistentes.putString("nombreThe3v3nt",respuesta.getString("nombre"));
                 editarDatosPersistentes.apply();
@@ -418,4 +418,10 @@ public class Login extends AppCompatActivity implements View.OnKeyListener {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         mTwitterAuthClient.onActivityResult(requestCode, resultCode, data);
     }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
 }

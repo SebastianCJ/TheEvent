@@ -2,6 +2,12 @@ package com.example.gatsu.theevent;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
+import com.facebook.login.LoginManager;
+
+import java.util.Arrays;
 
 public class Camera extends Activity {
 

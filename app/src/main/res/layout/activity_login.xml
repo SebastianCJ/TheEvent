@@ -89,6 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/olvidasteLogin"
+        android:clickable="true"
         android:text="@string/olvidasteContra"
         android:layout_below="@+id/passwordTxt"
         android:layout_centerHorizontal="true">
@@ -101,6 +102,7 @@
         android:id="@+id/registrateLogin"
         android:text="@string/noTienesCuenta"
         android:layout_below="@+id/btn_Fb"
+        android:clickable="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp">
 
