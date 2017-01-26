@@ -26,4 +26,9 @@
     <color name="black">#000000</color>
     <color name="bginput">#99ff436b</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="black21">#212121</color>
+    <color name="dark_gray">#373737</color>
+    <color name="gray_variant">#ff565e6b</color>
+    <color name="dark_green">#006666</color>
+    <color name="green_variant">#2FBCA1</color>
 </resources>

@@ -52,7 +52,7 @@ public class Registro extends AppCompatActivity implements View.OnKeyListener{
     private static final String TWITTER_SECRET = "hWkAQSdw2xwKVsiyljPRgBSb25ugcMRy6yeGUjuVvNMkkvw4d5";
     TwitterAuthClient mTwitterAuthClient;
     TwitterSession session;
-    private String serverUrl = "http://distro.mx/TheEvent/webservices/the3v3nt.php";
+    private String serverUrl = "http://theevent.com.mx/webservices/th33v3nt.php";
     private Button btnIniciarSesion;
     private EditText usuario;
     private EditText contrasena;
@@ -83,13 +83,11 @@ public class Registro extends AppCompatActivity implements View.OnKeyListener{
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new Twitter(authConfig));
 
-
         usuario = (EditText) this.findViewById(R.id.nombreR);
         contrasena = (EditText) this.findViewById(R.id.passwordTxtR);
         correoRegistro = (EditText) this.findViewById(R.id.emailTxtR);
         yatienescuenta = (TextView) this.findViewById(R.id.yatienesCuentaR);
         contrasena.setOnKeyListener(this);
-
 
         usuario.setTypeface(CustomFontsLoader.getTypeface(this,CustomFontsLoader.Light));
         contrasena.setTypeface(CustomFontsLoader.getTypeface(this,CustomFontsLoader.Light));
@@ -304,6 +302,7 @@ public class Registro extends AppCompatActivity implements View.OnKeyListener{
                         res = registrar(null, idTwit, UserName, null, "1");
                         return res.getString("success");
                 }
+
 
             } catch (Exception e) {
 

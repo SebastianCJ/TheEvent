@@ -26,7 +26,7 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 public class Evento extends AppCompatActivity {
-    private String serverUrl = "http://distro.mx/TheEvent/webservices/the3v3nt.php";
+    private String serverUrl = "http://theevent.com.mx/webservices/th33v3nt.php";
     public SharedPreferences datosPersistentes;
     ProgressDialog pDialog;
     private String[] nombres;
@@ -148,7 +148,7 @@ public class Evento extends AppCompatActivity {
                     descripciones[i] = evento.getString("descripcion");
                     fechas[i] = evento.getString("fecha");
                     ideventos[i] = evento.getString("idevento");
-                    String remotePath = "http://distro.mx/TheEvent/imagenes/eventos/" + evento.getString("imagen");
+                    String remotePath = "http://theevent.com.mx/imagenes/eventos/" + evento.getString("imagen");
                     Bitmap myBitMap = getBitmapFromURL(remotePath);
                     imagenes.add(myBitMap);
                     i++;
@@ -161,6 +161,7 @@ public class Evento extends AppCompatActivity {
         }
         return respuesta;
     }
+
     public class AsyncEventos extends AsyncTask<String, String, String> {
 
         public AsyncEventos() {
@@ -216,13 +217,21 @@ public class Evento extends AppCompatActivity {
             return "Error";
         }
 
-
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             pDialog.dismiss();
-            AdapterEventos adapter = new AdapterEventos(Evento.this, nombres, lugares, descripciones, fechas, imagenes);
-            eventContainer.setAdapter(adapter);
+
+            if (nombres != null && nombres.length > 0) {
+                AdapterEventos adapter = new AdapterEventos(Evento.this, nombres, lugares, descripciones, fechas, imagenes);
+                eventContainer.setAdapter(adapter);
+            }
+            else{
+                final TextView eventoNull = (TextView) findViewById(R.id.eventosNull);
+                final ImageView img = (ImageView) findViewById(R.id.imgmsg);
+                img.setVisibility(View.VISIBLE);
+                eventoNull.setVisibility(View.VISIBLE);
+        }
 
         }
     }

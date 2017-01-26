@@ -7,10 +7,15 @@
     <string name="selectEvento">SELECCIONA UN EVENTO</string>
     <string name="misEventos">MIS EVENTOS</string>
     <string name="contrasena">Contraseña</string>
+    <string name="contrasenaOld">Contraseña Actual</string>
+    <string name="contrasenaNueva">Contraseña Nueva</string>
     <string name="agregarEvento">Agregar Evento</string>
     <string name="facebook_app_id">714600825383444</string>
     <string name="fb_login_protocol_scheme">fb518262088371101</string>
     <string name="nombre">Nombre</string>
+    <string name="apaterno">Apellido Paterno</string>
+    <string name="amaterno">Apellido Materno</string>
+    <string name="telefono">Num. Telefono</string>
     <string name="quickstart_message">Click the SUBSCRIBE TO NEWS button below to subscribe to the
         news topic. Messages sent to the news topic will be received. The LOG TOKEN button logs the
         InstanceID token to logcat.</string>
@@ -28,5 +33,15 @@
     <string name="intro_message">Esta es la Camara2 API</string>
     <string name="imgevento">imgEvento</string>
     <string name="timeline">      TIMELINE</string>
-   <string name="title_activity_asd">asd</string>
+    <string name="calendario">      ACTIVIDADES</string>
+    <string name="ubicaciones">      UBICACIONES</string>
+    <string name="notificaciones">      NOTIFICACIONES</string>
+    <string name="title_activity_asd">asd</string>
+    <string name="sd">sd</string>
+    <string name="info">      MI INFORMACION</string>
+    <string name="saving_image">Saving image</string>
+    <string name="preparing_card">Preparing card</string>
+    <string name="no_storage_card">No storage card</string>
+    <string name="not_enough_space">Not enough space</string>
+    <string name="title_activity_notificaciones">Notificaciones</string>
 </resources>
