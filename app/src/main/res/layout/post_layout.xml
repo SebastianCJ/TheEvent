@@ -38,36 +38,33 @@
             android:textColor="@color/black"
             android:id="@+id/nombrePer"
             android:layout_marginTop="15dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginStart="80dp"
             android:layout_alignParentTop="true"
-            android:layout_alignLeft="@+id/foto2"
-            android:layout_alignStart="@+id/foto2"
-            android:layout_marginLeft="10dp" />
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hace 1 dia"
+            android:text="Hace 24 dias"
             android:textSize="13sp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:textColor="@color/silver"
             android:id="@+id/diatxt"
-            android:layout_alignBottom="@+id/nombrePer"
-            android:layout_alignRight="@+id/mensajeTime"
-            android:layout_alignEnd="@+id/mensajeTime"
+            android:layout_marginLeft="260dp"
             android:layout_marginRight="10dp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="5dp"
-            android:text="Que onda! Los esperamos para la boda!!! Ya tenemos casi todo listo, solo falta que confirmen todos su asistencia para este maravilloso dia... saludos!!!"
+            android:text="Que illos"
             android:textColor="@color/gray2"
             android:id="@+id/mensajeTime"
             android:textSize="12sp"
             android:layout_below="@+id/diatxt"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginRight="15dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp" />
 
         <TextView
@@ -87,11 +84,18 @@
             android:id="@+id/btnmegusta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:src="@mipmap/btnmegusta"
-            android:layout_alignTop="@+id/txt"
-            android:layout_alignLeft="@+id/mensajeTime"
-            android:layout_marginLeft="3dp" />
+            android:layout_marginLeft="20dp"
+            android:layout_alignTop="@+id/txt" />
+        <ImageView
+            android:id="@+id/btnmegustafill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/btnmegustafill"
+            android:visibility="gone"
+            android:layout_marginLeft="20dp"
+            android:layout_alignTop="@+id/txt" />
+
 
         <com.mikhaellopez.circularimageview.CircularImageView
             android:layout_width="20dp"
@@ -100,9 +104,8 @@
             app:civ_border="false"
             android:src="@mipmap/carb"
             android:layout_alignTop="@+id/foto2"
-            android:layout_toRightOf="@+id/btnmegusta"
-            android:layout_toEndOf="@+id/btnmegusta"
-            android:layout_marginLeft="3dp" />
+            android:layout_marginStart="40dp"
+            android:layout_marginLeft="40dp" />
 
         <com.mikhaellopez.circularimageview.CircularImageView
             android:layout_width="20dp"
@@ -156,14 +159,13 @@
     </RelativeLayout>
 
 
-
     <ImageView
         android:layout_width="wrap_content"
         android:id="@+id/vertblack"
         android:visibility="gone"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_more_vert_black_48dp"
-        android:layout_marginTop="46dp"
+        android:layout_marginTop="26dp"
         android:layout_below="@+id/desclayout"
         android:layout_centerHorizontal="true" />
 

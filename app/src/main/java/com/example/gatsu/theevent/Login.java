@@ -3,6 +3,8 @@ package com.example.gatsu.theevent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,8 +45,11 @@ import io.fabric.sdk.android.Fabric;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.util.Arrays;
 
 public class Login extends AppCompatActivity  {
@@ -54,7 +59,7 @@ public class Login extends AppCompatActivity  {
     private static final String TWITTER_SECRET = "hWkAQSdw2xwKVsiyljPRgBSb25ugcMRy6yeGUjuVvNMkkvw4d5";
     TwitterAuthClient mTwitterAuthClient;
     TwitterSession session;
-    private String serverUrl = "http://distro.mx/TheEvent/webservices/the3v3nt.php";
+    private String serverUrl = "http://theevent.com.mx/webservices/th33v3nt.php";
     private Button btnIniciarSesion;
     private EditText usuario;
     private EditText contrasena;
@@ -83,7 +88,6 @@ public class Login extends AppCompatActivity  {
         registrarse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("REGISTRO");
                 Intent Intent = new Intent(getApplicationContext(), Registro.class);
                 startActivity(Intent);
             }
@@ -283,13 +287,25 @@ public class Login extends AppCompatActivity  {
             respuesta = conexion.conexionServidor(serverUrl, "action=login&usuario=" + enteredUsername + "&pass=" + enteredPassword);
             Log.d("url: ","action=login&usuario=" + enteredUsername + "&pass=" + enteredPassword);
             if (respuesta.getString("success").equals("OK")) {
-
+                String remotePath;
                 //se guardan los datos de manera persistente.
+                if (respuesta.getString("imagen").equals("vacio")) {
+                    remotePath = "http://theevent.com.mx/imagenes/usuarios/default.png";
+                }
+                else{
+                    remotePath = "http://theevent.com.mx/imagenes/usuarios/" + respuesta.getString("imagen");
+                }
+                Bitmap myBitMap = getBitmapFromURL(remotePath);
+                createImageFromBitmap(myBitMap);
                 SharedPreferences.Editor editarDatosPersistentes = datosPersistentes.edit();
                 editarDatosPersistentes.putString("usrThe3v3nt", enteredUsername);
                 editarDatosPersistentes.putString("passThe3v3nt", enteredPassword);
                 editarDatosPersistentes.putString("idusrThe3v3nt", respuesta.getString("idusuario"));
                 editarDatosPersistentes.putString("nombreThe3v3nt",respuesta.getString("nombre"));
+                editarDatosPersistentes.putString("apaternoThe3v3nt", respuesta.getString("apaterno"));
+                editarDatosPersistentes.putString("amaternoThe3v3nt",respuesta.getString("amaterno"));
+                editarDatosPersistentes.putString("telefonoThe3v3nt", respuesta.getString("telefono"));
+                editarDatosPersistentes.putString("correoThe3v3nt",respuesta.getString("correo"));
                 editarDatosPersistentes.apply();
 
             }
@@ -308,10 +324,23 @@ public class Login extends AppCompatActivity  {
             System.out.println(respuesta.getString("success"));
             if (respuesta.getString("success").equals("OK")) {
 
+                String remotePath;
                 //se guardan los datos de manera persistente.
+                if (respuesta.getString("imagen").equals("vacio")) {
+                    remotePath = "http://theevent.com.mx/imagenes/usuarios/default";
+                }
+                else{
+                    remotePath = "http://theevent.com.mx/imagenes/usuarios/" + respuesta.getString("imagen");
+                }
+                Bitmap myBitMap = getBitmapFromURL(remotePath);
+                createImageFromBitmap(myBitMap);
                 SharedPreferences.Editor editarDatosPersistentes = datosPersistentes.edit();
                 editarDatosPersistentes.putString("idusrThe3v3nt", respuesta.getString("idfb"));
                 editarDatosPersistentes.putString("nombreThe3v3nt",respuesta.getString("nombre"));
+                editarDatosPersistentes.putString("apaternoThe3v3nt", respuesta.getString("apaterno"));
+                editarDatosPersistentes.putString("amaternoThe3v3nt",respuesta.getString("amaterno"));
+                editarDatosPersistentes.putString("telefonoThe3v3nt", respuesta.getString("telefono"));
+                editarDatosPersistentes.putString("correoThe3v3nt",respuesta.getString("correo"));
                 editarDatosPersistentes.apply();
 
             }
@@ -329,18 +358,46 @@ public class Login extends AppCompatActivity  {
             respuesta = conexion.conexionServidor(serverUrl, "action=logintwit&id=" + userID);
             Log.d("url: ","action=logintwit&id=" + userID);
             if (respuesta.getString("success").equals("OK")) {
-
+                String remotePath;
                 //se guardan los datos de manera persistente.
+                if (respuesta.getString("imagen").equals("vacio")) {
+                    remotePath = "http://theevent.com.mx/imagenes/usuarios/default";
+                }
+                else{
+                    remotePath = "http://theevent.com.mx/imagenes/usuarios/" + respuesta.getString("imagen");
+                }
+                Bitmap myBitMap = getBitmapFromURL(remotePath);
+                createImageFromBitmap(myBitMap);
                 SharedPreferences.Editor editarDatosPersistentes = datosPersistentes.edit();
                 editarDatosPersistentes.putString("usrThe3v3nt", UserName);
                 editarDatosPersistentes.putString("idusrThe3v3nt", respuesta.getString("id"));
                 editarDatosPersistentes.putString("nombreThe3v3nt",respuesta.getString("nombre"));
+                editarDatosPersistentes.putString("apaternoThe3v3nt", respuesta.getString("apaterno"));
+                editarDatosPersistentes.putString("amaternoThe3v3nt",respuesta.getString("amaterno"));
+                editarDatosPersistentes.putString("telefonoThe3v3nt", respuesta.getString("telefono"));
+                editarDatosPersistentes.putString("correoThe3v3nt",respuesta.getString("correo"));
                 editarDatosPersistentes.apply();
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
         return respuesta;
+    }
+
+    public String createImageFromBitmap(Bitmap bitmap) {
+        String fileName = "myImage";//no .png or .jpg needed
+        try {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            FileOutputStream fo = openFileOutput(fileName, Context.MODE_PRIVATE);
+            fo.write(bytes.toByteArray());
+            // remember close file output
+            fo.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            fileName = null;
+        }
+        return fileName;
     }
 
     public class AsyncLogin extends AsyncTask<String, String, String> {
@@ -409,6 +466,50 @@ public class Login extends AppCompatActivity  {
             else{
                 Toast.makeText(Login.this, result, Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    public Bitmap getBitmapFromURL(String src) {
+        try {
+            java.net.URL url = new java.net.URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url
+                    .openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            InputStream input = connection.getInputStream();
+            options.inSampleSize = calculateInSampleSize(options, 50, 50);
+
+            // Decode bitmap with inSampleSize set
+            options.inJustDecodeBounds = false;
+            return BitmapFactory.decodeStream(input,null,options);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

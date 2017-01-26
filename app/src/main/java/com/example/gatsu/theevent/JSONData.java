@@ -21,7 +21,7 @@ public class JSONData{
 
     protected JSONObject conexionServidor(String myurl, String parametros) throws IOException {
         InputStream is = null;
-        int length = 2048;
+        int length = 2048*200;
 
         try {
             URL url = new URL(myurl);
@@ -61,11 +61,12 @@ public class JSONData{
             }
 
             conn.connect();
-            int response = conn.getResponseCode();
+//            int response = conn.getResponseCode();
             is = conn.getInputStream();
 
             // Convert the InputStream into a string
             String contentAsString = convertInputStreamToString(is, length);
+            System.out.println("CONTENTASTRING"+contentAsString);
             JSONObject respuestaJSON = null;
 
 

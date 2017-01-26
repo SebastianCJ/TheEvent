@@ -1,5 +1,6 @@
 package com.example.gatsu.theevent;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 
 import android.content.Context;
@@ -7,19 +8,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -30,24 +27,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
-
-import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.BottomBarFragment;
-import com.roughike.bottombar.OnTabSelectedListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 public class Timeline extends AppCompatActivity {
-    private String serverUrl = "http://distro.mx/TheEvent/webservices/the3v3nt.php";
+    private String serverUrl = "http://theevent.com.mx/webservices/th33v3nt.php";
     public SharedPreferences datosPersistentes;
     ProgressDialog pDialog;
     private String[] nombres;
@@ -56,15 +48,13 @@ public class Timeline extends AppCompatActivity {
     private String[] comentarios;
     private String[] likes;
     private String[] idposts;
+    private String[] imagenesString;
     private String id;
-    private String idevento;
     JSONObject res;
     private int flag;
-    final String[] data ={"Opcion 1","Opcion 2",};
+    final String[] data ={"Mis Eventos","Mi Informacion","Notificaciones","Cerrar Sesion",};
     ListView eventContainer;
     ArrayList<Bitmap> imagenes = new ArrayList<>();
-    private BottomBar bottomBar;
-    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,13 +78,98 @@ public class Timeline extends AppCompatActivity {
         final ImageView btnmegusta = (ImageView) findViewById(R.id.btnmegusta);
         final ImageView btncomentario = (ImageView) findViewById(R.id.btncomentario);
 
+
+        try {
+            Bitmap bitmap = BitmapFactory.decodeStream(this.openFileInput("myImage"));
+            fotoPerfil.setImageBitmap(bitmap);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         flag = 0;
         new AsyncEventos().execute("timeline");
 
         fotoPerfil.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(Timeline.this, Camera.class);
+                final Dialog dialog = new Dialog(Timeline.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.dialog_layout);
+
+                TextView contenido = (TextView) dialog.findViewById(R.id.txtContenidoAlert);
+                Button primerboton = (Button) dialog.findViewById(R.id.btnPrimero);
+                Button segundoboton = (Button) dialog.findViewById(R.id.btnSegundo);
+                Button tercerboton = (Button) dialog.findViewById(R.id.btnTercero);
+
+                contenido.setText("Para cambiar la foto de perfil, porfavor seleccione una opcion.");
+                segundoboton.setText("Galeria");
+                primerboton.setText("Camara");
+                tercerboton.setVisibility(View.GONE);
+
+                primerboton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Timeline.this, Camara.class);
+                        startActivity(intent);
+                        dialog.dismiss();
+                    }
+                });
+
+                segundoboton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Timeline.this, Galeria.class);
+                        startActivity(intent);
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
+
+            }
+        });
+
+
+        iconCalendario.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(Timeline.this, Calendario.class);
                 startActivity(intent);
+
+            }
+        });
+
+        iconRuta.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(Timeline.this, Ubicaciones.class);
+                startActivity(intent);
+
+            }
+        });
+
+        iconPublicacion.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(Timeline.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCancelable(false);
+                dialog.setContentView(R.layout.dialog_layout);
+
+                TextView contenido = (TextView) dialog.findViewById(R.id.txtContenidoAlert);
+                Button primerboton = (Button) dialog.findViewById(R.id.btnPrimero);
+                Button segundoboton = (Button) dialog.findViewById(R.id.btnSegundo);
+                Button tercerboton = (Button) dialog.findViewById(R.id.btnTercero);
+
+                contenido.setText("Las publicaciones estaran disponibles hasta el dia del evento.");
+                segundoboton.setText("OK");
+                primerboton.setVisibility(View.GONE);
+                tercerboton.setVisibility(View.GONE);
+
+                segundoboton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
+
             }
         });
 
@@ -131,16 +206,6 @@ public class Timeline extends AppCompatActivity {
             }
         });
 
-//        eventContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, final View view,
-//                                    int position, long id) {
-//                Intent intent = new Intent(Timeline.this, Evento.class);
-//                startActivity(intent);
-//            }
-//
-//        });
 
         final DrawerLayout drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
         final ListView navList = (ListView) findViewById(R.id.drawer);
@@ -153,28 +218,64 @@ public class Timeline extends AppCompatActivity {
                 });
                 switch(pos){
                     case 1:
-                        System.out.println("CASO 1");
+                        Intent Intent = new Intent(getApplicationContext(), Evento.class);
+                        startActivity(Intent);
                         break;
                     case 2:
-                        System.out.println("CASO 2");
+                        Intent IntentInfo = new Intent(getApplicationContext(), MiInformacion.class);
+                        startActivity(IntentInfo);
+                        break;
+                    case 3:
+                        Intent IntentNotificaciones = new Intent(getApplicationContext(), Notificaciones.class);
+                        startActivity(IntentNotificaciones);
+                        break;
+
+                    case 4:
+                        final Dialog dialog = new Dialog(Timeline.this);
+                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialog.setCancelable(false);
+                        dialog.setContentView(R.layout.dialog_layout);
+
+                        TextView contenido = (TextView) dialog.findViewById(R.id.txtContenidoAlert);
+                        Button primerboton = (Button) dialog.findViewById(R.id.btnPrimero);
+                        Button segundoboton = (Button) dialog.findViewById(R.id.btnSegundo);
+                        Button tercerboton = (Button) dialog.findViewById(R.id.btnTercero);
+
+                        contenido.setText("¿Estas seguro que deseas cerrar sesión?");
+                        primerboton.setText("OK");
+                        segundoboton.setVisibility(View.GONE);
+                        tercerboton.setText("CANCELAR");
+
+                        primerboton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent cerrarSesion = new Intent(getApplicationContext(), Login.class);
+                                startActivity(cerrarSesion);
+                            }
+                        });
+
+                        tercerboton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        dialog.show();
                         break;
 
                 }
                 //drawer.closeDrawer(navList);
-                System.out.println("ASDFAS");
+
             }
         });
 
-        TextView textView = new TextView(this);
-        String nombre = datosPersistentes.getString("nombreThe3v3nt","");
-        textView.setText("Bienvenido " + nombre);
-        textView.setTextSize(16);
-        textView.setTextColor(getResources().getColor(R.color.pink));
-        textView.setTypeface(Typeface.DEFAULT_BOLD);
+        ImageView imageView = new ImageView(this);
+        imageView.setImageResource(R.mipmap.logomenu);
         float scale = getResources().getDisplayMetrics().density;
         int dp = (int) (15*scale + 0.5f);
-        textView.setPadding(dp,dp,0,dp);
-        navList.addHeaderView(textView);
+        imageView.setPadding(dp,dp,0,dp);
+        navList.addHeaderView(imageView);
 
         btnDrawerTimeline.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -257,7 +358,7 @@ public class Timeline extends AppCompatActivity {
     private JSONObject obtenerPosts(String metodo,String busqueda) {
         datosPersistentes = getSharedPreferences("The3v3nt", Context.MODE_PRIVATE);
         id = datosPersistentes.getString("idusrThe3v3nt","");
-        idevento = datosPersistentes.getString("ideventoThe3v3nt","");
+        String idevento = datosPersistentes.getString("ideventoThe3v3nt", "");
         Log.v("ESTE ES EL IDUSUARIO",id);
         JSONData conexion = new JSONData();
         JSONObject respuesta = null;
@@ -279,7 +380,7 @@ public class Timeline extends AppCompatActivity {
                 likes = new String[posts.length()];
                 idposts = new String[posts.length()];
                 imagenes.clear();
-
+                imagenesString = new String[posts.length()];
 
                 int i = 0;
 
@@ -290,7 +391,8 @@ public class Timeline extends AppCompatActivity {
                     mensajes[i] = post.getString("post");
                     comentarios[i] = post.getString("numcomentarios");
                     likes[i] = post.getString("numlikes");
-                    String remotePath = "http://distro.mx/TheEvent/imagenes/timeline/" + post.getString("imagen");
+                    imagenesString[i] = post.getString("imagen");
+                    String remotePath = "http://theevent.com.mx/imagenes/timeline/" + post.getString("imagen");
                     Bitmap myBitMap = getBitmapFromURL(remotePath);
                     imagenes.add(myBitMap);
                     idposts[i] = post.getString("idpost");
@@ -368,11 +470,19 @@ public class Timeline extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             pDialog.dismiss();
-            AdapterTimeline adapter = new AdapterTimeline(Timeline.this, nombres, dias, mensajes, imagenes, comentarios, likes);
-            eventContainer.setAdapter(adapter);
-
+            if (nombres != null && nombres.length > 0) {
+                AdapterTimeline adapter = new AdapterTimeline(Timeline.this, nombres, dias, mensajes, imagenes, comentarios, likes, idposts, imagenesString);
+                eventContainer.setAdapter(adapter);
+            }
+            else{
+                final TextView eventoNull = (TextView) findViewById(R.id.eventosNull);
+                final ImageView img = (ImageView) findViewById(R.id.imgmsg);
+                img.setVisibility(View.VISIBLE);
+                eventoNull.setVisibility(View.VISIBLE);
+            }
         }
     }
+
 
     @Override
     public void onBackPressed(){
